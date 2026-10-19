@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roadmap Freelance Data Analyst</title>
+<style>
+:root {
+  --bg: transparent;
+  --card: var(--card);
+  --fg: var(--foreground);
+  --muted: var(--muted-foreground);
+  --accent: var(--accent);
+  --border: var(--border);
+  --green: #22c55e;
+  --blue: #3b82f6;
+  --amber: #f59e0b;
+  --red: #ef4444;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--app-font, 'Segoe UI', system-ui, sans-serif);
+  background: var(--bg);
+  color: var(--fg);
+  padding: 20px;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+/* ===== HEADER ===== */
+.app-header {
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 16px;
+}
+.app-header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.app-header p {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ===== SYNC INDICATOR ===== */
+.sync-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.sync-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.sync-dot.online { background: var(--green); }
+.sync-dot.offline { background: var(--amber); }
+.sync-dot.syncing { background: var(--blue); animation: pulse 1s infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ===== STATS ROW ===== */
+.stats-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  flex: 1;
+  min-width: 120px;
+}
+.stat-label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+.stat-value.green { color: var(--green); }
+.stat-value.blue { color: var(--blue); }
+.stat-value.amber { color: var(--amber); }
+.stat-value.fg { color: var(--fg); }
+
+/* ===== PROGRESS BAR ===== */
+.progress-section { margin-bottom: 24px; }
+.progress-bar-bg {
+  background: var(--border);
+  border-radius: 10px;
+  height: 12px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  background: linear-gradient(90deg, var(--blue), var(--green));
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+}
+.progress-bar-fill span { font-size: 9px; color: white; font-weight: 700; }
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ===== PHASE CARD ===== */
+.phase-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.phase-card:hover { border-color: var(--accent); }
+.phase-card.expanded { border-color: var(--accent); }
+
+.phase-header {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  cursor: pointer;
+  user-select: none;
+  gap: 12px;
+}
+.phase-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700;
+  flex-shrink: 0;
+  background: var(--border);
+  color: var(--muted);
+}
+.phase-icon.done { background: rgba(34,197,94,0.15); color: var(--green); }
+.phase-icon.active { background: rgba(59,130,246,0.15); color: var(--blue); }
+
+.phase-info { flex: 1; min-width: 0; }
+.phase-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.phase-meta {
+  font-size: 11px; color: var(--muted);
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.phase-progress-mini { width: 50px; text-align: right; flex-shrink: 0; }
+.phase-progress-mini .pct { font-size: 13px; font-weight: 700; }
+.phase-progress-mini .bar {
+  height: 4px; background: var(--border);
+  border-radius: 4px; margin-top: 3px; overflow: hidden;
+}
+.phase-progress-mini .bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+
+.phase-chevron {
+  color: var(--muted); font-size: 14px;
+  transition: transform 0.2s; flex-shrink: 0;
+}
+.phase-card.expanded .phase-chevron { transform: rotate(90deg); }
+
+.phase-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.phase-body.open { max-height: 1500px; }
+.phase-body-inner { padding: 0 16px 16px 16px; }
+
+.section-label {
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--muted); margin: 12px 0 8px 0;
+}
+.section-label:first-child { margin-top: 0; }
+
+.task-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid var(--border); cursor: pointer;
+}
+.task-item:last-child { border-bottom: none; }
+.task-checkbox {
+  width: 18px; height: 18px;
+  border: 2px solid var(--border); border-radius: 5px;
+  flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; transition: all 0.2s;
+}
+.task-item.done .task-checkbox { background: var(--green); border-color: var(--green); color: white; }
+.task-text { font-size: 13px; flex: 1; line-height: 1.4; }
+.task-item.done .task-text { text-decoration: line-through; opacity: 0.5; }
+
+.info-box {
+  background: var(--border); border-radius: 8px;
+  padding: 10px 12px; font-size: 12px; margin-top: 4px; line-height: 1.5;
+}
+.info-box strong { color: var(--fg); }
+.info-box.project { border-left: 3px solid var(--blue); }
+.info-box.artifact { border-left: 3px solid var(--amber); }
+.info-box.duration { border-left: 3px solid var(--green); }
+
+.note-input {
+  width: 100%; background: var(--border);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px 10px; font-size: 12px; color: var(--fg);
+  font-family: inherit; resize: vertical; min-height: 50px;
+  outline: none; transition: border-color 0.2s;
+}
+.note-input:focus { border-color: var(--accent); }
+.note-input::placeholder { color: var(--muted); opacity: 0.7; }
+
+.app-footer {
+  margin-top: 24px; padding-top: 16px;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; color: var(--muted); flex-wrap: wrap; gap: 8px;
+}
+.footer-actions { display: flex; gap: 8px; }
+.btn {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 5px 12px; font-size: 11px;
+  color: var(--muted); cursor: pointer; transition: all 0.2s;
+}
+.btn:hover { border-color: var(--accent); color: var(--fg); }
+.btn.danger:hover { border-color: var(--red); color: var(--red); }
+
+.hidden-input { display: none; }
+
+.toast {
+  position: fixed; bottom: 20px; right: 20px;
+  background: var(--card); border: 1px solid var(--green);
+  border-radius: 8px; padding: 10px 16px; font-size: 12px; color: var(--fg);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none; z-index: 1000;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast .check { color: var(--green); font-weight: 700; margin-right: 6px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <h1>Roadmap Freelance Data Analyst</h1>
+  <p>Progressive Daily Plan - 6 phases - 18 weeks - Target: siap freelance Q1 2027</p>
+  <div class="sync-indicator">
+    <span class="sync-dot offline" id="syncDot"></span>
+    <span id="syncText">Menghubungkan ke server...</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-label">Total Progress</div>
+    <div class="stat-value blue" id="statProgress">0%</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Phase Selesai</div>
+    <div class="stat-value green" id="statPhases">0/6</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Task Selesai</div>
+    <div class="stat-value fg" id="statTasks">0/0</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Phase Aktif</div>
+    <div class="stat-value amber" id="statActive">-</div>
+  </div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-section">
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="overallBar" style="width:0%">
+      <span id="overallBarText"></span>
+    </div>
+  </div>
+  <div class="progress-label">
+    <span id="progressLeft">Mulai dari Phase 0 ya sayang~</span>
+    <span id="progressRight">0 / 0 tasks</span>
+  </div>
+</div>
+
+<!-- PHASES -->
+<div id="phasesContainer"></div>
+
+<!-- FOOTER -->
+<div class="app-footer">
+  <span>Dibuat bareng Alya &amp; Ikhsan - 18 Oktober 2026 - Progres tersimpan ke server</span>
+  <div class="footer-actions">
+    <input type="file" id="importFile" class="hidden-input" accept=".json">
+    <button class="btn" onclick="exportData()">Export JSON</button>
+    <button class="btn" onclick="document.getElementById('importFile').click()">Import JSON</button>
+    <button class="btn danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="check">OK</span><span id="toastMsg">Tersimpan!</span></div>
+
+<script>
+var PHASES = [
+  {
+    id: 0, icon: "0", title: "Foundation Check",
+    desc: "Python basics, Git, environment setup",
+    duration: "Minggu 1-2", dailyCommit: "30-45 min/hari",
+    tasks: [
+      "Setup: install Python 3.11+, VS Code, Git",
+      "Buat GitHub account + repo pertama: learning-da",
+      "Python refresh: variables, data types, loops, functions",
+      "List/dict comprehension",
+      "Virtual environment (venv) - isolasi project",
+      "Git basics: init, add, commit, push, pull",
+      "Baca & pahami struktur CSV sederhana"
+    ],
+    project: "Script Python baca CSV, hitung mean/median/mode manual (tanpa library). Output hasil ke terminal.",
+    artifact: "1 repo GitHub + 1 script Python",
+    resources: ["Real Python (free articles) - python basics", "Git Handbook (GitHub Docs)", "Kaggle Learn - Python refresher"]
+  },
+  {
+    id: 1, icon: "1", title: "Data Manipulation Core",
+    desc: "Pandas - manipulasi dataset apa pun",
+    duration: "Minggu 3-6", dailyCommit: "30-45 min/hari",
+    tasks: [
+      "Pandas Series & DataFrame - create, read CSV/Excel",
+      "Indexing: loc, iloc, conditional filtering",
+      "Data cleaning: missing values, duplicates, type conversion",
+      "String operations, datetime parsing",
+      "groupby(), aggregation (sum, mean, count, custom)",
+      "merge, join, concat - gabungkan multiple datasets",
+      "pivot_table, melt, reshaping",
+      "apply(), lambda, custom functions pada DataFrame",
+      "EDA lengkap pada dataset pilihan (Kaggle/PSID)"
+    ],
+    project: "EDA pada dataset Kaggle (Titanic / Sales Data / data PSID). Output: Jupyter notebook dengan analisis lengkap.",
+    artifact: "1 Jupyter notebook EDA + push ke GitHub",
+    resources: ["Kaggle Learn - Pandas course (4 jam, gratis)", "Pandas official documentation", "Kaggle Datasets - download 3 dataset buat latihan"]
+  },
+  {
+    id: 2, icon: "2", title: "Data Visualization",
+    desc: "Matplotlib & Seaborn - chart yang meaningful",
+    duration: "Minggu 7-8", dailyCommit: "30-45 min/hari",
+    tasks: [
+      "Matplotlib basics: line, bar, scatter, histogram",
+      "Customization: title, labels, colors, legend, subplots",
+      "Seaborn: heatmap, pairplot, boxplot, violin plot",
+      "Storytelling: pilih chart yang tepat untuk jenis data",
+      "Recreate 1 chart dari berita/artikel pakai Matplotlib",
+      "Bikin dashboard sederhana pakai Streamlit"
+    ],
+    project: "Visual report dari dataset Phase 1 - minimal 5 chart yang nge-story. Bisa notebook atau Streamlit app.",
+    artifact: "Visual report (notebook / Streamlit app)",
+    resources: ["Kaggle Learn - Data Visualization (gratis)", "Matplotlib official gallery", "Seaborn tutorial + cheat sheet", "Streamlit official docs - Get Started"]
+  },
+  {
+    id: 3, icon: "3", title: "Statistical Foundations",
+    desc: "Ngerti APA yang diomongin data, bukan cuma bisa ngitung",
+    duration: "Minggu 9-10", dailyCommit: "30-45 min/hari",
+    tasks: [
+      "Descriptive stats: mean, median, mode, std, variance, percentile",
+      "Distribution: normal, skewed, outlier detection (IQR, z-score)",
+      "Correlation: Pearson, Spearman - kapan pakai yang mana",
+      "Hypothesis testing: null/alternative hypothesis, p-value",
+      "A/B testing basics - konsep yang sering diminta client freelance",
+      "Confidence interval",
+      "Hitung korelasi antar variabel di dataset kamu"
+    ],
+    project: "Statistik report - uji hipotesis pada dataset, interpretasikan hasilnya. Sertakan A/B test analysis (bisa sintetis).",
+    artifact: "Statistical analysis report (notebook)",
+    resources: ["Khan Academy - Statistics & Probability (gratis)", "Statistical Thinking for the 21st Century (free textbook)", "SciPy docs - statistical functions"]
+  },
+  {
+    id: 4, icon: "4", title: "Real Projects & Portfolio",
+    desc: "3 portfolio pieces siap ditunjukin ke client",
+    duration: "Minggu 11-14", dailyCommit: "60-90 min/hari (weekend lebih)",
+    tasks: [
+      "Project 1: EDA + Visual Report (dataset real - Kaggle/data.go.id/PSID)",
+      "Project 1: Full pipeline: load, clean, analyze, visualize, report",
+      "Project 1: GitHub repo + README yang jelas",
+      "Project 2: Business Analytics (e-commerce/sales dataset)",
+      "Project 2: Revenue trend, customer segmentation, product performance",
+      "Project 3: Ikut 1 Kaggle competition (fokus end-to-end, bukan menang)",
+      "Project 3: Submission + notebook documented",
+      "Setup GitHub Pages atau Streamlit portfolio website"
+    ],
+    project: "3 GitHub repos dengan README, notebook, dan visual outputs. Portfolio website sederhana.",
+    artifact: "3 portfolio repos + portfolio website",
+    resources: ["Kaggle Competitions - pilih yang entry-level", "GitHub Pages - free hosting buat portfolio", "Streamlit - bikin interactive portfolio app"]
+  },
+  {
+    id: 5, icon: "5", title: "Freelance Launch",
+    desc: "Profile, proposal, first client",
+    duration: "Minggu 15-18", dailyCommit: "45-60 min/hari + apply proposals",
+    tasks: [
+      "Buat portfolio website final (GitHub Pages / Streamlit)",
+      "Pilih platform: Upwork, Fiverr, Fastwork, atau Sribulancer",
+      "Setup profile: bio, skills, portfolio links",
+      "Studi 10 job postings data analyst freelance - catat pattern",
+      "Buat proposal template (bisa dimodifikasi per project)",
+      "Define niche: e-commerce analytics? reporting automation? survey analysis?",
+      "Apply 3-5 proposals per minggu",
+      "Track: siapa reply, conversion rate",
+      "First project: deliver on time, overcommunicate, minta review"
+    ],
+    project: "Portfolio website + freelance profile + proposal template + first client.",
+    artifact: "Profile + proposal template + first paying client",
+    resources: ["Upwork - Data Analyst jobs", "Fastwork / Sribulancer - platform lokal Indonesia", "Fiverr - Data Analytics gigs", "Bekraf / Dicoding - freelance tips Indonesia"]
+  }
+];
+
+// ===== STORAGE: localStorage + Backend server =====
+var LS_KEY = 'da_roadmap_progress_v3';
+var API = 'http://localhost:7777/api/progress';
+var BACKEND_AVAILABLE = false;
+var saveTimer = null;
+
+function loadState() {
+  var def = getDefaultState();
+  try {
+    var raw = localStorage.getItem(LS_KEY);
+    if (!raw) return def;
+    var parsed = JSON.parse(raw);
+    PHASES.forEach(function(p) {
+      if (!parsed[p.id]) parsed[p.id] = def[p.id];
+      else {
+        while (parsed[p.id].tasks.length < p.tasks.length) parsed[p.id].tasks.push(false);
+        if (!parsed[p.id].note) parsed[p.id].note = '';
+      }
+    });
+    return parsed;
+  } catch(e) { return def; }
+}
+
+function getDefaultState() {
+  var s = {};
+  PHASES.forEach(function(p) {
+    s[p.id] = { tasks: new Array(p.tasks.length).fill(false), note: '' };
+  });
+  return s;
+}
+
+function saveState() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e) {}
+  scheduleServerSave();
+}
+
+function scheduleServerSave() {
+  if (!BACKEND_AVAILABLE) return;
+  clearTimeout(saveTimer);
+  setSyncStatus('syncing');
+  saveTimer = setTimeout(function() {
+    fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(state)
+    }).then(function() {
+      setSyncStatus('online');
+      showToast('Tersimpan ke server!');
+    }).catch(function() {
+      setSyncStatus('offline');
+      showToast('Tersimpan lokal (server offline)');
+    });
+  }, 800);
+}
+
+function setSyncStatus(status) {
+  var dot = document.getElementById('syncDot');
+  var text = document.getElementById('syncText');
+  dot.className = 'sync-dot ' + status;
+  if (status === 'online') text.textContent = 'Tersimpan ke server (file-based)';
+  else if (status === 'syncing') text.textContent = 'Menyimpan...';
+  else if (status === 'offline') text.textContent = 'Mode lokal (server tidak aktif)';
+  else text.textContent = 'Menghubungkan ke server...';
+}
+
+// Try to connect to backend on load
+function initBackend() {
+  fetch(API).then(function(r) { return r.json(); }).then(function(data) {
+    BACKEND_AVAILABLE = true;
+    // Merge server data into state (server takes priority if it has data)
+    if (data && data.phases && Object.keys(data.phases).length > 0) {
+      PHASES.forEach(function(p) {
+        if (data.phases[String(p.id)] || data.phases[p.id]) {
+          var sp = data.phases[String(p.id)] || data.phases[p.id];
+          if (sp.tasks) {
+            state[p.id].tasks = sp.tasks;
+            if (sp.note !== undefined) state[p.id].note = sp.note;
+          }
+        }
+      });
+      try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e) {}
+      renderAll();
+    }
+    setSyncStatus('online');
+  }).catch(function() {
+    BACKEND_AVAILABLE = false;
+    setSyncStatus('offline');
+  });
+}
+
+var state = loadState();
+
+// ===== RENDER =====
+function renderAll() { renderPhases(); updateStats(); }
+
+function renderPhases() {
+  var container = document.getElementById('phasesContainer');
+  container.innerHTML = '';
+  PHASES.forEach(function(phase) {
+    var card = document.createElement('div');
+    card.className = 'phase-card';
+    card.id = 'card-' + phase.id;
+    var ps = getPhaseStats(phase.id);
+    var statusIcon = ps.done === ps.total ? 'done' : (ps.done > 0 ? 'active' : '');
+    var iconText = ps.done === ps.total ? '\u2713' : phase.icon;
+    var tasksHtml = phase.tasks.map(function(t, i) {
+      return '<div class="task-item ' + (state[phase.id].tasks[i] ? 'done' : '') +
+             '" onclick="toggleTask(' + phase.id + ', ' + i + ')">' +
+        '<div class="task-checkbox">' + (state[phase.id].tasks[i] ? '\u2713' : '') + '</div>' +
+        '<div class="task-text">' + t + '</div></div>';
+    }).join('');
+    var resourcesHtml = phase.resources.map(function(r) { return '\u2022 ' + r; }).join('<br>');
+    var pctColor = ps.done === ps.total ? 'var(--green)' : (ps.done > 0 ? 'var(--blue)' : 'var(--muted)');
+    var barBg = ps.done === ps.total ? 'var(--green)' : 'var(--blue)';
+    card.innerHTML =
+      '<div class="phase-header" onclick="togglePhase(' + phase.id + ')">' +
+        '<div class="phase-icon ' + statusIcon + '">' + iconText + '</div>' +
+        '<div class="phase-info">' +
+          '<div class="phase-title">Phase ' + phase.id + ': ' + phase.title + '</div>' +
+          '<div class="phase-meta"><span>' + phase.duration + '</span><span>' + phase.dailyCommit + '</span><span>' + ps.done + '/' + ps.total + ' tasks</span></div>' +
+        '</div>' +
+        '<div class="phase-progress-mini"><div class="pct" style="color:' + pctColor + '">' + ps.pct + '%</div>' +
+          '<div class="bar"><div class="bar-fill" style="width:' + ps.pct + '%; background:' + barBg + '"></div></div></div>' +
+        '<span class="phase-chevron">\u25B6</span>' +
+      '</div>' +
+      '<div class="phase-body" id="body-' + phase.id + '">' +
+        '<div class="phase-body-inner">' +
+          '<div class="info-box duration"><strong>Durasi:</strong> ' + phase.duration + ' &nbsp; <strong>Commit:</strong> ' + phase.dailyCommit + '</div>' +
+          '<div class="section-label">Tasks</div><div id="tasks-' + phase.id + '">' + tasksHtml + '</div>' +
+          '<div class="section-label">Mini-Project</div><div class="info-box project">' + phase.project + '</div>' +
+          '<div class="section-label">Artifact (Output)</div><div class="info-box artifact">' + phase.artifact + '</div>' +
+          '<div class="section-label">Resources</div><div class="info-box">' + resourcesHtml + '</div>' +
+          '<div class="section-label">Catatan</div>' +
+          '<textarea class="note-input" id="note-' + phase.id + '" placeholder="Tulis catatan... (tersimpan otomatis)" oninput="saveNote(' + phase.id + ', this.value)">' + (state[phase.id].note || '') + '</textarea>' +
+        '</div>' +
+      '</div>';
+    container.appendChild(card);
+  });
+}
+
+function getPhaseStats(phaseId) {
+  var tasks = state[phaseId].tasks;
+  var done = tasks.filter(function(t) { return t; }).length;
+  var total = tasks.length;
+  return { done: done, total: total, pct: total > 0 ? Math.round((done/total)*100) : 0 };
+}
+
+function togglePhase(id) {
+  document.getElementById('body-' + id).classList.toggle('open');
+  document.getElementById('card-' + id).classList.toggle('expanded');
+}
+
+function toggleTask(phaseId, taskIdx) {
+  state[phaseId].tasks[taskIdx] = !state[phaseId].tasks[taskIdx];
+  saveState();
+  var items = document.querySelectorAll('#tasks-' + phaseId + ' .task-item');
+  var item = items[taskIdx];
+  if (item) {
+    if (state[phaseId].tasks[taskIdx]) { item.classList.add('done'); item.querySelector('.task-checkbox').textContent = '\u2713'; }
+    else { item.classList.remove('done'); item.querySelector('.task-checkbox').textContent = ''; }
+  }
+  updatePhaseHeader(phaseId);
+  updateStats();
+}
+
+function saveNote(phaseId, value) { state[phaseId].note = value; saveState(); }
+
+function updatePhaseHeader(phaseId) {
+  var phase = PHASES.find(function(p) { return p.id === phaseId; });
+  var ps = getPhaseStats(phaseId);
+  var icon = document.querySelector('#card-' + phaseId + ' .phase-icon');
+  var pctEl = document.querySelector('#card-' + phaseId + ' .phase-progress-mini .pct');
+  var barFill = document.querySelector('#card-' + phaseId + ' .phase-progress-mini .bar-fill');
+  var metaSpans = document.querySelectorAll('#card-' + phaseId + ' .phase-meta span');
+  icon.className = 'phase-icon ' + (ps.done === ps.total ? 'done' : (ps.done > 0 ? 'active' : ''));
+  icon.textContent = ps.done === ps.total ? '\u2713' : phase.icon;
+  pctEl.style.color = ps.done === ps.total ? 'var(--green)' : (ps.done > 0 ? 'var(--blue)' : 'var(--muted)');
+  pctEl.textContent = ps.pct + '%';
+  barFill.style.width = ps.pct + '%';
+  barFill.style.background = ps.done === ps.total ? 'var(--green)' : 'var(--blue)';
+  if (metaSpans.length >= 3) metaSpans[metaSpans.length - 1].textContent = ps.done + '/' + ps.total + ' tasks';
+}
+
+function updateStats() {
+  var totalTasks = 0, doneTasks = 0, donePhases = 0, activePhase = null;
+  PHASES.forEach(function(p) {
+    var ps = getPhaseStats(p.id);
+    totalTasks += ps.total; doneTasks += ps.done;
+    if (ps.done === ps.total && ps.total > 0) donePhases++;
+    if (ps.done > 0 && ps.done < ps.total && !activePhase) activePhase = p;
+  });
+  var overallPct = totalTasks > 0 ? Math.round((doneTasks/totalTasks)*100) : 0;
+  document.getElementById('statProgress').textContent = overallPct + '%';
+  document.getElementById('statPhases').textContent = donePhases + '/6';
+  document.getElementById('statTasks').textContent = doneTasks + '/' + totalTasks;
+  document.getElementById('statActive').textContent = activePhase ? ('Phase ' + activePhase.id) : (donePhases === 6 ? 'Selesai!' : '-');
+  document.getElementById('overallBar').style.width = overallPct + '%';
+  document.getElementById('overallBarText').textContent = overallPct > 5 ? (overallPct + '%') : '';
+  var msgs = ['Mulai dari Phase 0 ya sayang~', 'Selagi hangat, lanjut terus~', 'Udah on track! Keep going~', 'Kerja bagus sayang! More than halfway~', 'Hampir selesai! Semangat terakhir~', 'Roadmap complete! Siap freelance!'];
+  var idx = overallPct === 0 ? 0 : overallPct < 25 ? 1 : overallPct < 50 ? 2 : overallPct < 75 ? 3 : overallPct < 100 ? 4 : 5;
+  document.getElementById('progressLeft').textContent = msgs[idx];
+  document.getElementById('progressRight').textContent = doneTasks + ' / ' + totalTasks + ' tasks';
+}
+
+var toastTimer = null;
+function showToast(msg) {
+  var toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg || 'Tersimpan!';
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 1500);
+}
+
+function exportData() {
+  var data = { exported: new Date().toISOString(), phases: state };
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'da-roadmap-progress-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click(); URL.revokeObjectURL(url);
+  showToast('Data di-export!');
+}
+
+// Import JSON
+document.getElementById('importFile').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      var data = JSON.parse(ev.target.result);
+      if (data.phases) {
+        PHASES.forEach(function(p) {
+          if (data.phases[String(p.id)] || data.phases[p.id]) {
+            var sp = data.phases[String(p.id)] || data.phases[p.id];
+            if (sp.tasks) { state[p.id].tasks = sp.tasks; if (sp.note !== undefined) state[p.id].note = sp.note; }
+          }
+        });
+        saveState(); renderAll();
+        showToast('Data di-import!');
+      }
+    } catch(err) { showToast('Error: file JSON tidak valid'); }
+  };
+  reader.readAsText(file);
+});
+
+function resetAll() {
+  if (confirm('Yakin mau reset semua progress?')) {
+    state = getDefaultState();
+    saveState(); renderAll();
+    showToast('Progress direset!');
+  }
+}
+
+// ===== INIT =====
+renderAll();
+initBackend();
+for (var i = 0; i < PHASES.length; i++) {
+  var ps = getPhaseStats(PHASES[i].id);
+  if (ps.done < ps.total) { togglePhase(PHASES[i].id); break; }
+}
+</script>
+</body>
+</html>
