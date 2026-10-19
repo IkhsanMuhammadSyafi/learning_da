@@ -1,0 +1,78 @@
+{
+  "0": {
+    "tasks": [
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false
+    ],
+    "note": ""
+  },
+  "1": {
+    "tasks": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "note": ""
+  },
+  "2": {
+    "tasks": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "note": ""
+  },
+  "3": {
+    "tasks": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "note": ""
+  },
+  "4": {
+    "tasks": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "note": ""
+  },
+  "5": {
+    "tasks": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "note": ""
+  }
+}
